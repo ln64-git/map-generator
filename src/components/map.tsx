@@ -1,49 +1,72 @@
-import { useRef, useEffect, useState } from 'react';
+// components/Map.tsx
+"use client"
+import { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
-
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-const INITIAL_CENTER: [number, number] = [-74.0242, 40.6941]; // Initial center coordinates
-const INITIAL_ZOOM = 10.12;
+mapboxgl.accessToken = 'pk.eyJ1Ijoib3JwaGV1c3R3aW4iLCJhIjoiY20yN2NubHFiMGh5ZjJxb2s4NHc3aXlpNSJ9.Z005yAlm-EZ0_B8ypOp9fw';
 
-export function MapComponent() {
-    const mapRef = useRef<mapboxgl.Map | null>(null); // Ref for map instance
-    const mapContainerRef = useRef<HTMLDivElement | null>(null); // Ref for map container
-    const [center, setCenter] = useState<[number, number]>(INITIAL_CENTER); // Center state
-    const [zoom, setZoom] = useState(INITIAL_ZOOM); // Zoom state
+const Map = () => {
+    const mapContainer = useRef<HTMLDivElement | null>(null);
+    const map = useRef<mapboxgl.Map | null>(null);
+    const maxSpinZoom = 5;
+    const slowSpinZoom = 3;
+    const secondsPerRevolution = 240;
+    let userInteracting = false;
+    const spinEnabled = true;
 
     useEffect(() => {
-        mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
+        if (map.current || !mapContainer.current) return; // initialize map only once
+        map.current = new mapboxgl.Map({
+            container: mapContainer.current,
+            style: 'mapbox://styles/mapbox/standard-satellite',
+            projection: 'globe', // Display the map as a globe
+            zoom: 1,
+            center: [30, 15],
+        });
 
-        if (!mapboxgl.accessToken) {
-            console.error('Mapbox access token is missing');
-            return;
-        }
+        map.current.addControl(new mapboxgl.NavigationControl());
 
-        if (mapContainerRef.current && !mapRef.current) {
-            mapRef.current = new mapboxgl.Map({
-                container: mapContainerRef.current, // The map container
-                style: 'mapbox://styles/mapbox/navigation-night-v1', // Mapbox style
-                center: center,
-                zoom: zoom
-            });
+        // Scroll zoom is enabled by default, but you can fine-tune it
+        map.current.scrollZoom.enable();  // Enable scroll to zoom
 
-            mapRef.current.on('move', () => {
-                if (mapRef.current) {
-                    const mapCenter = mapRef.current.getCenter();
-                    const mapZoom = mapRef.current.getZoom();
-                    setCenter([mapCenter.lng, mapCenter.lat]);
-                    setZoom(mapZoom);
+        // Optional: Adjust scroll zoom speed if desired
+        map.current.scrollZoom.setWheelZoomRate(1.5); // Controls zoom sensitivity
+
+        map.current.on('style.load', () => {
+            map.current?.setFog({}); // Set the default atmosphere style
+        });
+
+        const spinGlobe = () => {
+            const zoom = map.current?.getZoom() || 0;
+            if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+                let distancePerSecond = 360 / secondsPerRevolution;
+                if (zoom > slowSpinZoom) {
+                    const zoomDif = (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+                    distancePerSecond *= zoomDif;
                 }
-            });
-        }
-
-        return () => {
-            if (mapRef.current) {
-                mapRef.current.remove();
+                const center = map.current?.getCenter();
+                if (center) {
+                    center.lng -= distancePerSecond;
+                    map.current?.easeTo({ center, duration: 1000, easing: (n) => n });
+                }
             }
         };
+
+        map.current.on('mousedown', () => {
+            userInteracting = true;
+        });
+        map.current.on('dragstart', () => {
+            userInteracting = true;
+        });
+        map.current.on('moveend', () => {
+            spinGlobe();
+        });
+
+        spinGlobe();
     }, []);
 
-    return <div ref={mapContainerRef} className="w-full h-full" />;
-}
+    return <div ref={mapContainer} style={{ width: '100%', height: '100vh' }} />;
+};
+
+export default Map;
