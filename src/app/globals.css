@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --input-bg: #f0f0f0;
+  --input-text: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --input-bg: #1a1a1a;
+    --input-text: #ededed;
+  }
+}
+
+#map-container {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input[type="text"] {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--input-border);
+  /* rounded-md */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--foreground);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
