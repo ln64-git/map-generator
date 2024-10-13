@@ -21,8 +21,8 @@ const Map = () => {
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/standard-satellite',
             projection: 'globe', // Display the map as a globe
-            zoom: 1,
-            center: [30, 15],
+            zoom: 6,
+            center: [277, 40],
         });
 
         map.current.addControl(new mapboxgl.NavigationControl());
@@ -30,11 +30,33 @@ const Map = () => {
         // Scroll zoom is enabled by default, but you can fine-tune it
         map.current.scrollZoom.enable();  // Enable scroll to zoom
 
-        // Optional: Adjust scroll zoom speed if desired
-        map.current.scrollZoom.setWheelZoomRate(1.5); // Controls zoom sensitivity
 
         map.current.on('style.load', () => {
-            map.current?.setFog({}); // Set the default atmosphere style
+            // Add daytime fog
+            map.current?.setFog({
+                'range': [-1, 2],
+                'horizon-blend': 0.3,
+                'color': 'black',
+                'high-color': '#000000',
+                'space-color': '#0d1931',
+                'star-intensity': 1.0
+            });
+
+            // Add 3D terrain
+            map.current?.addSource('mapbox-dem', {
+                'type': 'raster-dem',
+                'url': 'mapbox://mapbox.terrain-rgb',
+                'tileSize': 512,
+                'maxzoom': 14
+            });
+            map.current?.setTerrain({
+                'source': 'mapbox-dem',
+                'exaggeration': 1.5
+            });
+            map.current?.setTerrain({
+                'source': 'mapbox-dem',
+                'exaggeration': 1.5
+            });
         });
 
         const spinGlobe = () => {
