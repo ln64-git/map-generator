@@ -6,7 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3JwaGV1c3R3aW4iLCJhIjoiY20yN2NubHFiMGh5ZjJxb2s4NHc3aXlpNSJ9.Z005yAlm-EZ0_B8ypOp9fw';
 
-const Map = () => {
+const MapComponent = () => {
     const mapContainer = useRef<HTMLDivElement | null>(null);
     const map = useRef<mapboxgl.Map | null>(null);
     const maxSpinZoom = 5;
@@ -30,7 +30,6 @@ const Map = () => {
         // Scroll zoom is enabled by default, but you can fine-tune it
         map.current.scrollZoom.enable();  // Enable scroll to zoom
 
-
         map.current.on('style.load', () => {
             // Add daytime fog
             map.current?.setFog({
@@ -48,10 +47,6 @@ const Map = () => {
                 'url': 'mapbox://mapbox.terrain-rgb',
                 'tileSize': 512,
                 'maxzoom': 14
-            });
-            map.current?.setTerrain({
-                'source': 'mapbox-dem',
-                'exaggeration': 1.5
             });
             map.current?.setTerrain({
                 'source': 'mapbox-dem',
@@ -88,7 +83,7 @@ const Map = () => {
         spinGlobe();
     }, []);
 
-    return <div ref={mapContainer} style={{ width: '100%', height: '100vh' }} />;
+    return <div ref={mapContainer} className='rounded-md' style={{ width: '100%', height: '100%' }} />;
 };
 
-export default Map;
+export default MapComponent;

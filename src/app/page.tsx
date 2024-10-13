@@ -1,17 +1,27 @@
-// pages/index.tsx
-import Map from '@/components/map';
-import Head from 'next/head';
+"use client";
+
+import MapComponent from "@/components/map";
 
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>Mapbox Globe</title>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet" />
-      </Head>
-      <div style={{ width: '100%', height: '100vh' }}>
-        <Map />
+      <div className="w-full max-w-md mx-auto p-4 h-screen flex flex-col">
+        {/* Header Section */}
+        <div className="pb-3 flex-none">
+          <div>Map Generator</div>
+          <div>
+            <input
+              type="text"
+              placeholder="Enter your prompt"
+              className="mt-2 p-2 border rounded-md w-full"
+            />
+          </div>
+        </div>
+
+        {/* Map Section - Flex grow to take available space */}
+        <div className="flex-grow rounded-md p-2 overflow-hidden">
+          <MapComponent />
+        </div>
       </div>
     </>
   );
