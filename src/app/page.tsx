@@ -1,24 +1,33 @@
-"use client";
-
+"use client"
 import MapComponent from "@/components/map";
+import { useState } from "react";
 
 export default function Home() {
+  const [prompt, setPrompt] = useState("");
+
+  function submitPrompt() {
+    // 
+  }
+
   return (
     <>
       <div className="w-full max-w-md mx-auto p-4 h-screen flex flex-col">
-        {/* Header Section */}
         <div className="pb-3 flex-none">
           <div>Map Generator</div>
-          <div>
-            <input
-              type="text"
-              placeholder="Enter your prompt"
-              className="mt-2 p-2 border rounded-md w-full"
-            />
-          </div>
+          <input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Enter your prompt"
+            className="mt-2 p-2 border rounded-md w-full"
+          />
+          <button
+            onClick={submitPrompt}
+            className="mt-4 p-2 bg-slate-800 text-white rounded-md w-full hover:bg-slate-700"
+          >
+            Submit
+          </button>
         </div>
-
-        {/* Map Section - Flex grow to take available space */}
         <div className="flex-grow rounded-md p-2 overflow-hidden">
           <MapComponent />
         </div>
