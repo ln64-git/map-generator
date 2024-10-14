@@ -5,11 +5,13 @@ import { useState } from "react";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
+  const [geoJsonData, setGeoJsonData] = useState<GeoJSONFeatureCollection | null>(null);
 
   async function submitPrompt() {
     try {
       const response = await submitPromptToOllama(prompt);
       console.log("response: ", response);
+      setGeoJsonData(response as GeoJSONFeatureCollection);
     } catch (error) {
       console.error("Error sending prompt to OpenAI:", error);
     }
@@ -35,7 +37,7 @@ export default function Home() {
           </button>
         </div>
         <div className="flex-grow rounded-md p-2 overflow-hidden">
-          <MapComponent />
+          <MapComponent geoJsonData={geoJsonData} />
         </div>
       </div>
     </>
