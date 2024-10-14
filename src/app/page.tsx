@@ -1,12 +1,18 @@
 "use client"
 import MapComponent from "@/components/map";
+import { submitPromptToOllama } from "@/utils/langchain";
 import { useState } from "react";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
 
-  function submitPrompt() {
-    // 
+  async function submitPrompt() {
+    try {
+      const response = await submitPromptToOllama(prompt);
+      console.log("response: ", response);
+    } catch (error) {
+      console.error("Error sending prompt to OpenAI:", error);
+    }
   }
 
   return (
