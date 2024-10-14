@@ -30,8 +30,8 @@ const MapComponent = ({ geoJsonData }: MapComponentProps) => {
                 'range': [-1, 2],
                 'horizon-blend': 0.3,
                 'color': 'black',
-                'high-color': '#000000',
-                'space-color': '#0d1931',
+                'high-color': '#090909',
+                'space-color': '#0d0d0d',
                 'star-intensity': 1.0
             });
 
