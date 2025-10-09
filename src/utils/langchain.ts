@@ -6,7 +6,7 @@ const model = new ChatOpenAI({
 	modelName: "gpt-4o",
 });
 
-export async function submitPromptToOllama(
+export async function generateGeoJSON(
 	userPrompt: string,
 ): Promise<GeoJSON.FeatureCollection> {
 	try {

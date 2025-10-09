@@ -4,11 +4,10 @@ An AI-powered map generator that transforms natural language prompts into intera
 
 ## Features
 
-- 🗺️ **AI-Powered GeoJSON Generation** - Convert natural language descriptions into GeoJSON data using OpenAI's GPT-4 or Ollama's Llama 3.1
+- 🗺️ **AI-Powered GeoJSON Generation** - Convert natural language descriptions into GeoJSON data using OpenAI's GPT-4
 - 🌍 **3D Globe Visualization** - Interactive 3D globe with terrain rendering and atmospheric fog effects
 - ⚡ **Real-time Rendering** - Instantly visualize generated geographic data on the map
 - 🎨 **Modern UI** - Clean, dark-themed interface built with Tailwind CSS
-- 🔄 **Flexible AI Backend** - Support for both cloud-based (OpenAI) and local (Ollama) AI models
 
 ## Tech Stack
 
@@ -16,8 +15,7 @@ An AI-powered map generator that transforms natural language prompts into intera
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Mapping**: [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/)
-- **AI Integration**: [LangChain](https://js.langchain.com/) with OpenAI and Ollama
-- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **AI Integration**: [LangChain](https://js.langchain.com/) with OpenAI
 
 ## Prerequisites
 
@@ -29,9 +27,7 @@ Before you begin, ensure you have the following installed:
 You'll also need:
 
 - **Mapbox Account**: Get a free access token from [Mapbox](https://account.mapbox.com/access-tokens/)
-- **AI Model Access**: Either
-  - OpenAI API key from [OpenAI Platform](https://platform.openai.com/api-keys), or
-  - Local [Ollama](https://ollama.ai/) installation with llama3.1 model
+- **OpenAI API Key**: Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
 
 ## Installation
 
@@ -54,18 +50,11 @@ pnpm install
 bun install
 ```
 
-3. Create a `.env.local` file in the root directory:
+3. Create a `.env` file in the root directory:
 
 ```env
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
 OPENAI_API_KEY=your_openai_api_key_here
-```
-
-4. (Optional) If using Ollama, make sure it's running locally:
-
-```bash
-ollama serve
-ollama pull llama3.1
 ```
 
 ## Usage
@@ -113,14 +102,6 @@ map-generator/
 
 ## Configuration
 
-### Switching AI Models
-
-The project currently uses OpenAI's GPT-4 by default. To switch to Ollama:
-
-1. Open `src/utils/langchain.ts`
-2. Change the `model2.invoke()` call to `model.invoke()`
-3. Ensure Ollama is running locally on port 11434
-
 ### Map Customization
 
 Edit `src/components/map.tsx` to customize:
@@ -140,10 +121,10 @@ Edit `src/components/map.tsx` to customize:
 
 ## Environment Variables
 
-| Variable                          | Description                           | Required              |
-| --------------------------------- | ------------------------------------- | --------------------- |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox access token for map rendering | Yes                   |
-| `OPENAI_API_KEY`                  | OpenAI API key for GPT-4 access       | Yes (if using OpenAI) |
+| Variable                          | Description                           | Required |
+| --------------------------------- | ------------------------------------- | -------- |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox access token for map rendering | Yes      |
+| `OPENAI_API_KEY`                  | OpenAI API key for GPT-4 access       | Yes      |
 
 ## License
 
