@@ -64,19 +64,41 @@ export interface HistoricalEventQuery {
 		description: string;
 		casualties?: string;
 		commanders?: string[];
+		strategicImportance?: string;
+		battleType?: string;
 	}>;
 	movements?: Array<{
 		name: string;
 		from: [number, number];
 		to: [number, number];
+		route?: Array<[number, number]>;
 		side: "allied" | "enemy";
 		description: string;
 		year: number;
+		movementType?: string;
+		duration?: string;
 	}>;
 	territories?: Array<{
 		name: string;
 		coordinates: Array<[number, number]>;
 		side: "allied" | "enemy" | "neutral";
+		description: string;
+		year: number;
+		controlType?: string;
+	}>;
+	strategicLocations?: Array<{
+		name: string;
+		coordinates: [number, number];
+		type: string;
+		side: "allied" | "enemy" | "neutral";
+		importance: string;
+		description: string;
+		year: number;
+	}>;
+	supplyLines?: Array<{
+		name: string;
+		coordinates: Array<[number, number]>;
+		side: "allied" | "enemy";
 		description: string;
 		year: number;
 	}>;
