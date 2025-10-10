@@ -121,7 +121,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 										${properties.description ? `<p class="text-sm text-gray-300 mt-3 pt-2 border-t border-[#333333]">${properties.description}</p>` : ''}
 									</div>
 								`)
-								.addTo(map.current);
+								.addTo(map.current!);
 						}
 					}
 				});
