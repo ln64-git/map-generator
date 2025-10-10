@@ -1,13 +1,17 @@
 "use client";
 import { useId, useState } from "react";
 import MapComponent from "@/components/map";
-import { generateGeoJSON } from "@/utils/langchain";
+import type { ProcessedQuery, QueryAnalysis } from "@/types/queryTypes";
+import { generateDynamicMapData } from "@/utils/langchain";
+import { analyzeQuery } from "@/utils/queryAnalyzer";
 
 export default function Home() {
 	const promptId = useId();
 	const [prompt, setPrompt] = useState("");
-	const [geoJsonData, setGeoJsonData] =
-		useState<GeoJSONFeatureCollection | null>(null);
+	const [mapData, setMapData] = useState<ProcessedQuery | null>(null);
+	const [queryAnalysis, setQueryAnalysis] = useState<QueryAnalysis | null>(
+		null,
+	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -18,29 +22,73 @@ export default function Home() {
 		setError(null);
 
 		try {
-			const response = await generateGeoJSON(prompt);
-			setGeoJsonData(response as GeoJSONFeatureCollection);
+			// Analyze the query first
+			const analysis = analyzeQuery(prompt);
+			console.log("🔍 Query Analysis Result:", analysis);
+			setQueryAnalysis(analysis);
+
+			// Generate dynamic map data based on query type
+			const response = await generateDynamicMapData(prompt, analysis);
+			console.log("🔍 Generated Map Data:", response);
+			setMapData(response);
 		} catch (error) {
-			console.error("Error generating GeoJSON:", error);
+			console.error("Error generating map data:", error);
 			setError("Failed to generate map data. Please try again.");
 		} finally {
 			setIsLoading(false);
 		}
 	}
 
+	const getQueryTypeIcon = (type: string) => {
+		switch (type) {
+			case "route":
+				return "🗺️";
+			case "historical-event":
+				return "📜";
+			case "network-analysis":
+				return "🕸️";
+			case "geographic-feature":
+				return "🏔️";
+			default:
+				return "📍";
+		}
+	};
+
+	const getQueryTypeColor = (type: string) => {
+		switch (type) {
+			case "route":
+				return "text-blue-400";
+			case "historical-event":
+				return "text-red-400";
+			case "network-analysis":
+				return "text-purple-400";
+			case "geographic-feature":
+				return "text-green-400";
+			default:
+				return "text-gray-400";
+		}
+	};
+
 	return (
 		<div className="relative h-screen bg-[#0a0a0a]">
 			{/* Map takes full screen */}
 			<div className="absolute inset-0">
-				<MapComponent geoJsonData={geoJsonData} />
+				<MapComponent
+					mapData={mapData}
+					queryType={queryAnalysis?.type || "generic"}
+				/>
 			</div>
 
-			{/* Compact menu overlay */}
+			{/* Enhanced menu overlay */}
 			<div className="absolute top-4 left-4 w-80 bg-[#111111]/95 backdrop-blur-sm border border-[#1f1f1f] rounded-xl shadow-2xl">
 				<div className="p-4">
 					<div className="mb-4">
-						<h1 className="text-xl font-bold text-white">Map Generator</h1>
-						<p className="text-xs text-gray-400">AI-powered geographic visualizations</p>
+						<h1 className="text-xl font-bold text-white">
+							Map Generator
+						</h1>
+						<p className="text-xs text-gray-400">
+							AI-powered geographic intelligence
+						</p>
 					</div>
 
 					<div className="space-y-3">
@@ -54,11 +102,35 @@ export default function Home() {
 							id={promptId}
 							value={prompt}
 							onChange={(e) => setPrompt(e.target.value)}
-							placeholder="e.g., Draw a line from New York to Los Angeles"
+							placeholder="Try: 'Napoleonic Wars', 'Silk Road trade network', 'Pacific Crest Trail'"
 							className="w-full p-3 rounded-lg text-sm leading-relaxed resize-none"
 							disabled={isLoading}
 							rows={3}
 						/>
+
+						{/* Query type indicator */}
+						{queryAnalysis && (
+							<div className="flex items-center gap-2 p-2 bg-[#1a1a1a] rounded-lg">
+								<span className="text-lg">
+									{getQueryTypeIcon(queryAnalysis.type)}
+								</span>
+								<div>
+									<div
+										className={`text-xs font-medium ${getQueryTypeColor(queryAnalysis.type)}`}
+									>
+										{queryAnalysis.type.replace("-", " ").toUpperCase()}
+									</div>
+									<div className="text-xs text-gray-500">
+										{queryAnalysis.intent}
+									</div>
+								</div>
+								<div className="ml-auto">
+									<div className="text-xs text-gray-500">
+										{Math.round(queryAnalysis.confidence * 100)}% confidence
+									</div>
+								</div>
+							</div>
+						)}
 
 						{error && (
 							<div className="p-2 bg-red-500/10 border border-red-500/20 rounded-lg">
@@ -98,9 +170,34 @@ export default function Home() {
 									Generating...
 								</span>
 							) : (
-								"Generate Map"
+								"Generate Dynamic Map"
 							)}
 						</button>
+					</div>
+
+					{/* Example queries */}
+					<div className="mt-4 pt-4 border-t border-[#1f1f1f]">
+						<div className="text-xs text-gray-500 mb-2">
+							Try these examples:
+						</div>
+						<div className="space-y-1">
+							{[
+								"Napoleonic Wars",
+								"Silk Road trade network",
+								"Pacific Crest Trail",
+								"Roman Empire expansion",
+								"Trans-Siberian Railway route",
+							].map((example) => (
+								<button
+									key={example}
+									type="button"
+									onClick={() => setPrompt(example)}
+									className="block w-full text-left text-xs text-gray-400 hover:text-white p-1 rounded"
+								>
+									{example}
+								</button>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>
