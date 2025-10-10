@@ -84,7 +84,7 @@ export default function Home() {
 				<div className="p-4">
 					<div className="mb-4">
 						<h1 className="text-xl font-bold text-white">
-							Map Generator
+							updateMap Generator
 						</h1>
 						<p className="text-xs text-gray-400">
 							AI-powered geographic intelligence

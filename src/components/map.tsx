@@ -318,14 +318,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 			const phase = eventData.phases[currentPhase];
 			if (!phase) return;
 
-			const allFeatures: Array<{
-				type: "Feature";
-				properties: Record<string, unknown>;
-				geometry: {
-					type: "Point" | "LineString" | "Polygon";
-					coordinates: number[] | number[][] | number[][][];
-				};
-			}> = [];
+			const allFeatures: GeoJSON.Feature[] = [];
 
 			// 1. Render territories (mesh overlays) - Enhanced debugging
 			if (eventData.territories) {
@@ -346,7 +339,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 								type: "Polygon",
 								coordinates: [territory.coordinates]
 							}
-						});
+						} as GeoJSON.Feature<GeoJSON.Polygon>);
 					} else {
 						console.warn("⚠️ Territory with insufficient coordinates:", territory.name);
 					}
@@ -376,7 +369,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 							type: "LineString",
 							coordinates: coordinates
 						}
-					});
+					} as GeoJSON.Feature<GeoJSON.LineString>);
 				});
 			}
 
@@ -399,7 +392,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 							type: "Point",
 							coordinates: battle.coordinates
 						}
-					});
+					} as GeoJSON.Feature<GeoJSON.Point>);
 				});
 			}
 
@@ -422,7 +415,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 							type: "Point",
 							coordinates: location.coordinates
 						}
-					});
+					} as GeoJSON.Feature<GeoJSON.Point>);
 				});
 			}
 
@@ -443,7 +436,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 							type: "LineString",
 							coordinates: supplyLine.coordinates
 						}
-					});
+					} as GeoJSON.Feature<GeoJSON.LineString>);
 				});
 			}
 
@@ -463,7 +456,7 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 							type: "Point",
 							coordinates: coord,
 						},
-					});
+					} as GeoJSON.Feature<GeoJSON.Point>);
 				});
 			}
 
