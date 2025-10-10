@@ -690,14 +690,14 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 				const bounds = new mapboxgl.LngLatBounds();
 				allFeatures.forEach((feature) => {
 					if (feature.geometry.type === "Point") {
-						bounds.extend(feature.geometry.coordinates as [number, number]);
+						bounds.extend(feature.geometry.coordinates as GeoJSON.Position);
 					} else if (feature.geometry.type === "LineString") {
-						feature.geometry.coordinates.forEach((coord: [number, number]) => {
-							bounds.extend(coord);
+						feature.geometry.coordinates.forEach((coord: GeoJSON.Position) => {
+							bounds.extend(coord as [number, number]);
 						});
 					} else if (feature.geometry.type === "Polygon") {
-						feature.geometry.coordinates[0].forEach((coord: [number, number]) => {
-							bounds.extend(coord);
+						feature.geometry.coordinates[0].forEach((coord: GeoJSON.Position) => {
+							bounds.extend(coord as [number, number]);
 						});
 					}
 				});
