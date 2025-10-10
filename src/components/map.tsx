@@ -48,95 +48,99 @@ const MapComponent = ({ mapData }: MapComponentProps) => {
 
 			// Add Mapbox's built-in boundary layers for accurate nation/state borders
 			// These provide much more accurate boundaries than our custom polygons
-			map.current.addSource("mapbox-boundaries", {
-				type: "vector",
-				url: "mapbox://mapbox.boundaries-adm0-v3"
-			});
+			if (map.current) {
+				map.current.addSource("mapbox-boundaries", {
+					type: "vector",
+					url: "mapbox://mapbox.boundaries-adm0-v3"
+				});
 
-			map.current.addSource("mapbox-boundaries-admin1", {
-				type: "vector", 
-				url: "mapbox://mapbox.boundaries-adm1-v3"
-			});
+				map.current.addSource("mapbox-boundaries-admin1", {
+					type: "vector", 
+					url: "mapbox://mapbox.boundaries-adm1-v3"
+				});
 
-			// Add nation boundaries layer
-			map.current.addLayer({
-				id: "nation-boundaries",
-				type: "line",
-				source: "mapbox-boundaries",
-				"source-layer": "boundaries_admin_0",
-				paint: {
-					"line-color": "#ffffff",
-					"line-width": 2,
-					"line-opacity": 0.8,
-				},
-				filter: ["==", "admin_level", 0]
-			});
+				// Add nation boundaries layer
+				map.current.addLayer({
+					id: "nation-boundaries",
+					type: "line",
+					source: "mapbox-boundaries",
+					"source-layer": "boundaries_admin_0",
+					paint: {
+						"line-color": "#ffffff",
+						"line-width": 2,
+						"line-opacity": 0.8,
+					},
+					filter: ["==", "admin_level", 0]
+				});
 
-			// Add state/province boundaries layer
-			map.current.addLayer({
-				id: "state-boundaries", 
-				type: "line",
-				source: "mapbox-boundaries-admin1",
-				"source-layer": "boundaries_admin_1",
-				paint: {
-					"line-color": "#cccccc",
-					"line-width": 1,
-					"line-opacity": 0.6,
-				},
-				filter: ["==", "admin_level", 1]
-			});
+				// Add state/province boundaries layer
+				map.current.addLayer({
+					id: "state-boundaries", 
+					type: "line",
+					source: "mapbox-boundaries-admin1",
+					"source-layer": "boundaries_admin_1",
+					paint: {
+						"line-color": "#cccccc",
+						"line-width": 1,
+						"line-opacity": 0.6,
+					},
+					filter: ["==", "admin_level", 1]
+				});
+			}
 
 			// Add click handlers for interactive elements
-			map.current.on("click", (e) => {
-				const features = map.current?.queryRenderedFeatures(e.point, {
-					layers: ["historical-battles", "historical-movements", "historical-territories", "historical-strategic-locations", "historical-supply-lines", "geographic-feature-points", "network-nodes", "network-connections"]
-				});
+			if (map.current) {
+				map.current.on("click", (e) => {
+					const features = map.current?.queryRenderedFeatures(e.point, {
+						layers: ["historical-battles", "historical-movements", "historical-territories", "historical-strategic-locations", "historical-supply-lines", "geographic-feature-points", "network-nodes", "network-connections"]
+					});
 
-				if (features && features.length > 0) {
-					const feature = features[0];
-					const properties = feature.properties;
-					
-					console.log("🎯 Clicked Feature:", properties);
-					
-					// Create popup with detailed information - Sophisticated dark mode
-					new mapboxgl.Popup({
-						closeButton: true,
-						closeOnClick: false,
-						className: 'sophisticated-popup'
-					})
-						.setLngLat(e.lngLat)
-						.setHTML(`
-							<div class="p-4 text-white bg-[#111111] border border-[#333333] rounded-lg shadow-2xl max-w-sm">
-								<h3 class="font-bold text-lg mb-3 text-white border-b border-[#333333] pb-2">${properties.name}</h3>
-								${properties.date ? `<p class="text-sm text-gray-300 mb-2"><strong>Date:</strong> ${properties.date}</p>` : ''}
-								${properties.outcome ? `<p class="text-sm mb-2"><strong>Outcome:</strong> <span class="font-semibold px-2 py-1 rounded text-xs ${properties.outcome === 'victory' ? 'bg-green-900 text-green-300' : properties.outcome === 'defeat' ? 'bg-red-900 text-red-300' : 'bg-orange-900 text-orange-300'}">${properties.outcome.toUpperCase()}</span></p>` : ''}
-								${properties.side ? `<p class="text-sm mb-2"><strong>Side:</strong> <span class="font-semibold px-2 py-1 rounded text-xs ${properties.side === 'allied' ? 'bg-blue-900 text-blue-300' : 'bg-red-900 text-red-300'}">${properties.side.toUpperCase()}</span></p>` : ''}
-								${properties.casualties ? `<p class="text-sm mb-2"><strong>Casualties:</strong> ${properties.casualties}</p>` : ''}
-								${properties.commanders ? `<p class="text-sm mb-2"><strong>Commanders:</strong> ${properties.commanders.join(', ')}</p>` : ''}
-								${properties.featureType === 'trail-marker' ? `<p class="text-sm mb-2"><strong>Type:</strong> <span class="font-semibold px-2 py-1 rounded text-xs bg-green-900 text-green-300">TRAIL MARKER</span></p>` : ''}
-								${properties.description ? `<p class="text-sm text-gray-300 mt-3 pt-2 border-t border-[#333333]">${properties.description}</p>` : ''}
-							</div>
-						`)
-						.addTo(map.current);
-				}
-			});
-
-			// Change cursor on hover for interactive elements
-			const interactiveLayers = ["historical-battles", "historical-strategic-locations", "historical-supply-lines", "geographic-feature-points", "network-nodes", "network-connections"];
-			
-			interactiveLayers.forEach(layer => {
-				map.current.on("mouseenter", layer, () => {
-					if (map.current) {
-						map.current.getCanvas().style.cursor = "pointer";
+					if (features && features.length > 0) {
+						const feature = features[0];
+						const properties = feature.properties;
+						
+						console.log("🎯 Clicked Feature:", properties);
+						
+						// Create popup with detailed information - Sophisticated dark mode
+						new mapboxgl.Popup({
+							closeButton: true,
+							closeOnClick: false,
+							className: 'sophisticated-popup'
+						})
+							.setLngLat(e.lngLat)
+							.setHTML(`
+								<div class="p-4 text-white bg-[#111111] border border-[#333333] rounded-lg shadow-2xl max-w-sm">
+									<h3 class="font-bold text-lg mb-3 text-white border-b border-[#333333] pb-2">${properties.name}</h3>
+									${properties.date ? `<p class="text-sm text-gray-300 mb-2"><strong>Date:</strong> ${properties.date}</p>` : ''}
+									${properties.outcome ? `<p class="text-sm mb-2"><strong>Outcome:</strong> <span class="font-semibold px-2 py-1 rounded text-xs ${properties.outcome === 'victory' ? 'bg-green-900 text-green-300' : properties.outcome === 'defeat' ? 'bg-red-900 text-red-300' : 'bg-orange-900 text-orange-300'}">${properties.outcome.toUpperCase()}</span></p>` : ''}
+									${properties.side ? `<p class="text-sm mb-2"><strong>Side:</strong> <span class="font-semibold px-2 py-1 rounded text-xs ${properties.side === 'allied' ? 'bg-blue-900 text-blue-300' : 'bg-red-900 text-red-300'}">${properties.side.toUpperCase()}</span></p>` : ''}
+									${properties.casualties ? `<p class="text-sm mb-2"><strong>Casualties:</strong> ${properties.casualties}</p>` : ''}
+									${properties.commanders ? `<p class="text-sm mb-2"><strong>Commanders:</strong> ${properties.commanders.join(', ')}</p>` : ''}
+									${properties.featureType === 'trail-marker' ? `<p class="text-sm mb-2"><strong>Type:</strong> <span class="font-semibold px-2 py-1 rounded text-xs bg-green-900 text-green-300">TRAIL MARKER</span></p>` : ''}
+									${properties.description ? `<p class="text-sm text-gray-300 mt-3 pt-2 border-t border-[#333333]">${properties.description}</p>` : ''}
+								</div>
+							`)
+							.addTo(map.current);
 					}
 				});
 
-				map.current.on("mouseleave", layer, () => {
-					if (map.current) {
-						map.current.getCanvas().style.cursor = "";
-					}
+				// Change cursor on hover for interactive elements
+				const interactiveLayers = ["historical-battles", "historical-strategic-locations", "historical-supply-lines", "geographic-feature-points", "network-nodes", "network-connections"];
+				
+				interactiveLayers.forEach(layer => {
+					map.current?.on("mouseenter", layer, () => {
+						if (map.current) {
+							map.current.getCanvas().style.cursor = "pointer";
+						}
+					});
+
+					map.current?.on("mouseleave", layer, () => {
+						if (map.current) {
+							map.current.getCanvas().style.cursor = "";
+						}
+					});
 				});
-            });
+			}
         });
     }, []);
 
