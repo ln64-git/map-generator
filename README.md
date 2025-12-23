@@ -1,135 +1,52 @@
-# Map Generator
+## Description
 
-An AI-powered map generator that transforms natural language prompts into interactive geographic visualizations using LangChain and Mapbox.
+An AI-powered map generator that transforms natural language prompts into interactive geographic visualizations using LangChain structured output and Mapbox 3D rendering.
+
+## Skills / Tools / Stack
+
+- TypeScript
+- LangChain
+- OpenAI API
+- Next.js
+- Mapbox GL JS
+
+# Summary
+
+Map Generator converts plain English into interactive maps. Describe a route, historical event, or trade network in natural language and watch it render as GeoJSON on a 3D globe.
+
+The system uses LangChain with GPT-4 to parse intent and generate structured geographic data. Multi-mode prompt engineering handles different query types—routes with waypoints, historical events with battles and territorial control, network analysis with nodes and connections. Mapbox GL JS renders the output with terrain, atmospheric effects, and real-time visualization.
+
+Built for researchers, educators, and anyone who needs geographic data without manual coordinate entry or GIS expertise.
 
 ## Features
 
-- 🗺️ **AI-Powered GeoJSON Generation** - Convert natural language descriptions into GeoJSON data using OpenAI's GPT-4
-- 🌍 **3D Globe Visualization** - Interactive 3D globe with terrain rendering and atmospheric fog effects
-- ⚡ **Real-time Rendering** - Instantly visualize generated geographic data on the map
-- 🎨 **Modern UI** - Clean, dark-themed interface built with Tailwind CSS
+- Natural language to GeoJSON transformation via GPT-4 structured output
+- Multi-mode prompt engineering for routes, historical events, and network analysis
+- 3D globe visualization with terrain rendering and atmospheric fog
+- Route generation with waypoints, distance, and duration estimates
+- Historical event mapping with battles, movements, territories, and strategic locations
+- Network analysis with nodes, connections, and relationship strength
+- Real-time rendering of generated geographic data
+- JSON sanitization and error recovery for malformed AI output
+- Dark-themed modern UI built with Tailwind CSS
+- Next.js 14 App Router with server actions
 
-## Tech Stack
+### Roadmap
 
-- **Framework**: [Next.js 14](https://nextjs.org/) with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Mapping**: [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/)
-- **AI Integration**: [LangChain](https://js.langchain.com/) with OpenAI
+1. Add support for animated route playback
+2. Implement historical timeline scrubbing for event maps
+3. Build export functionality for GeoJSON and static images
+4. Create preset templates for common map types
+5. Add collaborative editing for shared map projects
 
-## Prerequisites
+### Instructions
 
-Before you begin, ensure you have the following installed:
+1. Clone the repository and install dependencies with `bun install`
+2. Create `.env` file with `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` and `OPENAI_API_KEY`
+3. Start the development server with `bun run dev`
+4. Open `http://localhost:3000` and enter a natural language prompt
+5. View generated geographic data rendered on the 3D map
 
-- Node.js 18+ or Bun runtime
-- npm, yarn, pnpm, or bun package manager
+### License
 
-You'll also need:
-
-- **Mapbox Account**: Get a free access token from [Mapbox](https://account.mapbox.com/access-tokens/)
-- **OpenAI API Key**: Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone <repository-url>
-cd map-generator
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
-```
-
-3. Create a `.env` file in the root directory:
-
-```env
-NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
-OPENAI_API_KEY=your_openai_api_key_here
-```
-
-## Usage
-
-1. Start the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-2. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-3. Enter a natural language prompt describing the geographic data you want to generate, for example:
-
-   - "Draw a line from New York to Los Angeles"
-   - "Create a route through the Great Lakes"
-   - "Generate a path along the West Coast from Seattle to San Diego"
-
-4. Click "Submit" and watch as the AI generates GeoJSON data and visualizes it on the map
-
-## Project Structure
-
-```
-map-generator/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx          # Main page component
-│   │   ├── layout.tsx        # Root layout
-│   │   └── globals.css       # Global styles
-│   ├── components/
-│   │   └── map.tsx           # Mapbox map component
-│   ├── types/
-│   │   └── types.ts          # TypeScript type definitions
-│   └── utils/
-│       └── langchain.ts      # LangChain AI integration
-├── public/                   # Static assets
-└── package.json             # Dependencies and scripts
-```
-
-## Configuration
-
-### Map Customization
-
-Edit `src/components/map.tsx` to customize:
-
-- Initial map center and zoom level
-- Map style (currently using `dark-v11`)
-- Terrain exaggeration
-- Fog effects and atmosphere
-- Line colors and widths for rendered GeoJSON
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## Environment Variables
-
-| Variable                          | Description                           | Required |
-| --------------------------------- | ------------------------------------- | -------- |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox access token for map rendering | Yes      |
-| `OPENAI_API_KEY`                  | OpenAI API key for GPT-4 access       | Yes      |
-
-## License
-
-This project is private and not licensed for public use.
-
-## Contributing
-
-This is a private project. Contributions are not currently being accepted.
+Private
